@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Navbar from './components/layout/Navbar';
-import User from './components/users/Users';
-import Search from './components/users/Search';
+import User from './components/users/User';
 import Alert from './components/layout/Alert';
-import axios from 'axios';
+import Home from './components/pages/Home';
+import About from './components/pages/About';
+import NotFound from './components/pages/NotFound';
+
+import GithubState from './context/github/GithubState';
+import AlertState from './context/alert/AlertState';
 import './App.css';
 
-class App extends Component {
-  state = {
-    users: [],
-    loading: false,
-    alert: null,
-  };
+const App = () => {
   // async componentDidMount() {
   //   this.setState({ loading: true });
 
@@ -22,44 +22,26 @@ class App extends Component {
   //   this.setState({ users: res.data, loading: false });
   // }
 
-  // Search Github users
-  searchUsers = async (text) => {
-    this.setState({ loading: true });
-    const res = await axios.get(
-      `https://api.github.com/search/users?q=${text}&client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&client_secret=${process.env.REACT_APP_GITHUB_CLIENT_SECRET}`
-    );
-
-    this.setState({ users: res.data.items, loading: false });
-  };
-
-  // Clear users from state
-  clearUsers = () => this.setState({ users: [], loading: false });
-
-  // Set Alet
-  setAlert = (msg, type) => {
-    this.setState({ alert: { msg, type } });
-
-    setTimeout(() => this.setState({ alert: null }), 5000);
-  };
-
-  render() {
-    const { users, loading, alert } = this.state;
-    return (
-      <div className='App'>
-        <Navbar />
-        <div className='container'>
-          <Alert alert={alert} />
-          <Search
-            searchUsers={this.searchUsers}
-            clearUsers={this.clearUsers}
-            showClear={users.length > 0 ? true : false}
-            setAlert={this.setAlert}
-          />
-          <User loading={loading} users={users} />
-        </div>
-      </div>
-    );
-  }
-}
+  return (
+    <GithubState>
+      <AlertState>
+        <Router>
+          <div className='App'>
+            <Navbar />
+            <div className='container'>
+              <Alert />
+              <Switch>
+                <Route exact path='/' component={Home} />
+                <Route exact path='/about' component={About} />
+                <Route exact path='/user/:login' component={User} />
+                <Route component={NotFound} />
+              </Switch>
+            </div>
+          </div>
+        </Router>
+      </AlertState>
+    </GithubState>
+  );
+};
 
 export default App;
