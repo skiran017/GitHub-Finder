@@ -3,7 +3,6 @@ import UserItem from './UserItem';
 import Spinner from '../layout/Spinner';
 
 import GithubContext from '../../context/github/githubContext';
-import GithubState from '../../context/github/GithubState';
 
 const Users = () => {
   const githubContext = useContext(GithubContext);
