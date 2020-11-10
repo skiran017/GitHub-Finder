@@ -6,7 +6,7 @@ import {
   GET_REPOS,
 } from '../types';
 
-export default githubReducer = (state, action) => {
+export const GithubReducer = (state, action) => {
   switch (action.type) {
     case SEARCH_USERS:
       return {
